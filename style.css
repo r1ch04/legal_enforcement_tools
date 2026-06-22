@@ -1,0 +1,391 @@
+
+/* ------------------------
+   Apple‑style Modern Theme
+   (Non-breaking: only visuals)
+   ------------------------ */
+
+:root{
+  --apple-font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display",
+                "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "PingFang TC",
+                "Microsoft JhengHei", "Heiti TC", sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+  --bg: #f5f7fb;
+  --panel: #ffffff;
+  --panel-border: rgba(0,0,0,0.08);
+  --text: #0b0c0e;
+  --muted: #5c5f66;
+  --brand: #0a84ff;          /* iOS accent blue */
+  --brand-2: #007aff;        /* alt accent */
+  --ok: #34c759;
+  --warn: #ffcc00;
+  --danger: #ff3b30;
+  --ring: rgba(10,132,255,0.4);
+  --shadow: 0 10px 30px rgba(0,0,0,0.08);
+  --radius: 18px;
+}
+
+.dark-mode{
+  --bg: #0c0c0c;
+  --panel: #121214;
+  --panel-border: rgba(255,255,255,0.06);
+  --text: #f4f6f8;
+  --muted: #a3a6ad;
+  --brand: #0a84ff;
+  --brand-2: #0a84ff;
+  --ok: #30d158;
+  --warn: #ffd60a;
+  --danger: #ff453a;
+  --ring: rgba(10,132,255,0.45);
+  --shadow: 0 14px 40px rgba(0,0,0,0.45);
+}
+
+.apple-ui{
+  background: radial-gradient(1200px 800px at 100% -10%, rgba(10,132,255,0.08), transparent 60%),
+              radial-gradient(1200px 800px at -10% 100%, rgba(52,199,89,0.06), transparent 60%),
+              var(--bg);
+  color: var(--text);
+  font-family: var(--apple-font);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Glassy navbar */
+.glass-nav.navbar{
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  background: rgba(250,250,252,0.6);
+  border-bottom: 1px solid var(--panel-border);
+}
+.dark-mode .glass-nav.navbar{
+  background: rgba(18,18,20,0.5);
+}
+.glass-nav .navbar-brand{
+  font-weight: 700;
+  letter-spacing: .2px;
+}
+.glass-nav .nav-link{
+  color: var(--muted);
+  font-weight: 600;
+}
+.glass-nav .nav-link.active,
+.glass-nav .nav-link:hover{
+  color: var(--text);
+}
+
+/* Panels */
+.panel{
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: clamp(16px, 2.2vw, 28px);
+  margin-block: clamp(16px, 2.4vw, 28px);
+}
+.panel > h1, .panel > h2{
+  font-weight: 800;
+  letter-spacing: .2px;
+  margin-bottom: 18px;
+}
+
+/* Buttons */
+.btn{
+  border-radius: 12px !important;
+  font-weight: 700;
+  letter-spacing: .2px;
+  transition: transform .04s ease, box-shadow .2s ease;
+}
+.btn:active{ transform: translateY(1px); }
+.btn-primary{
+  background: linear-gradient(180deg, var(--brand), var(--brand-2));
+  border: none;
+  box-shadow: 0 8px 20px rgba(10,132,255,0.25);
+}
+.btn-secondary{
+  background: linear-gradient(180deg, #e9ecf5, #dfe4ee);
+  color: #1c1e21;
+  border: 1px solid var(--panel-border);
+}
+.dark-mode .btn-secondary{
+  background: linear-gradient(180deg, #1c1d20, #1a1b1e);
+  color: var(--text);
+  border: 1px solid var(--panel-border);
+}
+.btn-success{ background: linear-gradient(180deg, var(--ok), #22b24d); border: none; }
+.btn-warning{ background: linear-gradient(180deg, var(--warn), #ffb800); border: none; color:#1b1b1b; }
+.btn-danger{  background: linear-gradient(180deg, var(--danger), #d61f19); border: none; }
+
+/* Inputs */
+.form-control, .form-select, .form-check-input, textarea{
+  background: linear-gradient(180deg, #ffffff, #fafbfc);
+  color: var(--text);
+  border: 1px solid var(--panel-border);
+  border-radius: 12px;
+  padding: 10px 12px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.6);
+}
+.form-control:focus, .form-select:focus, textarea:focus{
+  border-color: var(--brand);
+  box-shadow: 0 0 0 4px var(--ring);
+}
+.dark-mode .form-control, .dark-mode .form-select, .dark-mode textarea{
+  background: linear-gradient(180deg, #151518, #131416);
+  color: var(--text);
+  border-color: var(--panel-border);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
+}
+
+/* Tables */
+.table{
+  --bs-table-color: var(--text);
+  --bs-table-striped-color: var(--text);
+  --bs-table-bg: transparent;
+  border-color: var(--panel-border);
+}
+.table thead th{
+  background: linear-gradient(180deg, #f6f7fb, #edf1f6);
+  color: #1a1b1e;
+  border-bottom: 1px solid var(--panel-border);
+  font-weight: 800;
+}
+.dark-mode .table thead th{
+  background: linear-gradient(180deg, #181a1f, #14161b);
+  color: var(--text);
+}
+.table tbody tr{
+  transition: background .15s ease;
+}
+.table tbody tr:hover{
+  background: rgba(10,132,255,0.06);
+}
+.table-responsive{
+  border: 1px solid var(--panel-border);
+  border-radius: 14px;
+  overflow: auto;
+}
+
+/* Pills / badges */
+.badge, .btn .badge{
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-weight: 700;
+}
+
+/* Toast (save success) */
+.toast{
+  backdrop-filter: saturate(180%) blur(12px);
+  -webkit-backdrop-filter: saturate(180%) blur(12px);
+  border-radius: 14px;
+  border: 1px solid var(--panel-border);
+}
+
+/* Small helpers */
+.text-muted{ color: var(--muted) !important; }
+hr{ border-color: var(--panel-border); opacity: .6; }
+.container{ max-width: 1080px; }
+::selection{ background: rgba(10,132,255,.25); }
+
+/* Dark navbar text fixed */
+.dark-mode .navbar .navbar-brand,
+.dark-mode .navbar .nav-link{ color: var(--text); }
+.dark-mode .navbar .nav-link.active,
+.dark-mode .navbar .nav-link:hover{ color: #8ad1ff; }
+
+/* Success alert (if used) match theme */
+#successAlert{
+  background: linear-gradient(180deg, var(--ok), #22b24d) !important;
+  color: #fff !important;
+  border: none !important;
+  box-shadow: 0 12px 28px rgba(52,199,89,.35) !important;
+}
+
+/* Improve headings & spacing */
+h1, h2, h3{ font-weight: 800; letter-spacing: .2px; }
+label.form-label{ font-weight: 700; color: var(--muted); }
+
+/* Icon buttons */
+.btn-icon{
+  width: 40px; height: 40px;
+  display: inline-flex; align-items:center; justify-content:center;
+  border-radius: 12px;
+  border: 1px solid var(--panel-border);
+  background: linear-gradient(180deg, #ffffff, #f6f7fb);
+}
+.dark-mode .btn-icon{
+  background: linear-gradient(180deg, #1a1b1e, #17181b);
+}
+
+/* --- Original CSS preserved below for specific hooks --- */
+/* 預設淺色模式 */
+body {
+	background-color: #f8f9fa;
+	color: #000;
+}
+
+h1 {
+	text-align: center;
+	margin-bottom: 20px;
+}
+
+.table {
+	margin-top: 20px;
+	color: #000;
+}
+
+.form-control,
+select,
+textarea {
+	background-color: #fff;
+	color: #000;
+}
+
+.navbar-light {
+	background-color: #ffffff;
+	color: #000;
+}
+
+.navbar-light .navbar-brand,
+.navbar-light .nav-link {
+	color: #000;
+}
+
+.navbar-light .navbar-nav .nav-link.active {
+	color: #007bff;
+}
+
+.navbar-light .nav-link:hover {
+	color: #0056b3;
+}
+
+/* 按鈕樣式保持 Bootstrap 預設 */
+.btn-primary {
+	background-color: #007bff;
+	color: #fff;
+	border: none;
+}
+
+.btn-secondary {
+	background-color: #6c757d;
+	color: #fff;
+	border: none;
+}
+
+.btn-success {
+	background-color: #28a745;
+	color: #fff;
+	border: none;
+}
+
+.btn-warning {
+	background-color: #ffc107;
+	color: #212529;
+	border: none;
+}
+
+.btn-danger {
+	background-color: #dc3545;
+	color: #fff;
+	border: none;
+}
+
+.btn-info {
+	background-color: #17a2b8;
+	color: #fff;
+	border: none;
+}
+
+.btn:hover {
+	opacity: 0.9;
+}
+
+/* 深色模式 */
+.dark-mode {
+	background-color: #121212;
+	color: #f0f0f0;
+}
+
+.dark-mode ::placeholder {
+	color: #f0f0f0;
+	opacity: 1;
+}
+
+.dark-mode h1 {
+	color: #f0f0f0;
+}
+
+.dark-mode .table {
+	color: #f0f0f0;
+}
+
+.dark-mode .form-control,
+.dark-mode select,
+.dark-mode textarea {
+	background-color: #333;
+	color: #fff;
+	border: 1px solid #555;
+}
+
+/* 按鈕在深色模式下保持一致的背景顏色 */
+.dark-mode .btn-primary {
+	background-color: #007bff;
+	color: #fff;
+}
+
+.dark-mode .btn-secondary {
+	background-color: #6c757d;
+	color: #fff;
+}
+
+.dark-mode .btn-success {
+	background-color: #28a745;
+	color: #fff;
+}
+
+.dark-mode .btn-warning {
+	background-color: #ffc107;
+	color: #212529;
+}
+
+.dark-mode .btn-danger {
+	background-color: #dc3545;
+	color: #fff;
+}
+
+.dark-mode .btn-info {
+	background-color: #17a2b8;
+	color: #fff;
+}
+
+/* 深色模式的導航列樣式 */
+.dark-mode .navbar {
+	background-color: #333;
+	color: #f0f0f0;
+}
+
+.dark-mode .navbar .navbar-brand,
+.dark-mode .navbar .nav-link {
+	color: #212529;
+}
+
+.dark-mode .navbar .nav-link.active {
+	color: #00aaff;
+}
+
+.dark-mode .navbar .nav-link:hover {
+	color: #00aaff;
+}
+
+/* 成功通知動畫效果 */
+.alert.fade {
+	transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+}
+
+.alert.show {
+	opacity: 1;
+	transform: translateY(0);
+}
+
+.alert.hide {
+	opacity: 0;
+	transform: translateY(20px);
+}
+
+
