@@ -18,8 +18,10 @@
 ### 安裝依賴
 
 ```bash
-npm install
+npm ci
 ```
+
+首次安裝或更新依賴時可使用 `npm install`。`node_modules/` 與 `dist/` 為本機產物，不會提交到 Git。
 
 ### 開發模式
 
@@ -67,24 +69,23 @@ npm run preview
 
 ## 部署到 GitHub Pages
 
-### 方法 1: 使用 GitHub Actions (推薦)
+### 方法 1: 使用 GitHub Actions
 
 1. 確保您的倉庫已啟用 GitHub Pages
    - 前往倉庫的 Settings > Pages
    - 選擇 Source 為 "GitHub Actions"
 
-2. 推送代碼到 `main` 或 `master` 分支
+2. 推送代碼到 `main` 或 `master` 分支，並確保工作流會先執行 `npm ci` 與 `npm run build`
 
 3. GitHub Actions 會自動構建並部署到 GitHub Pages
 
 ### 方法 2: 手動部署
 
 ```bash
-npm run build
 npm run deploy
 ```
 
-這會使用 `gh-pages` 將 `dist/` 目錄部署到 GitHub Pages。
+`npm run deploy` 會先建立 `dist/`，再使用 `gh-pages` 將它發布至 `gh-pages` 分支。請在 GitHub Pages 設定中選擇從該分支部署；主分支無須提交 `dist/`。
 
 **注意**: 如果您的倉庫名稱不是 `legal_enforcement_tools`，請在 `vite.config.ts` 中設置正確的 `base` 路徑。
 
@@ -136,6 +137,12 @@ npm run deploy
    - 可生成統計報告，並提供複製功能
    - 支援 PDF 報告導出
    - 直觀的數據可視化
+
+4. **案件整理打包**
+   - 每案產出獨立 ZIP，DOCX 位於 ZIP 第一層，附件置於案件資料夾
+   - DOCX 欄位可勾選、調整名稱／順序及新案件預設值
+   - 支援 pdf、doc/docx、xls/xlsx、txt、png、jpg/jpeg 附件；含格式、重複檔與容量檢查
+   - 表單草稿暫存 2 小時，附件不暫存，可手動清空
 
 此外，工具內建深色模式切換功能，提供更佳的使用體驗。
 

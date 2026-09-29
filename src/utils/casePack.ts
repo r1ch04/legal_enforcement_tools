@@ -1,4 +1,4 @@
-import { CasePackItem } from '../types'
+import { CasePackDocxFieldConfig, CasePackDocxFieldKey, CasePackItem } from '../types'
 
 let casePackDepsPromise: Promise<{
   JSZip: any
@@ -31,6 +31,13 @@ export interface CaseZipOutput {
   caseId: string
   fileName: string
   blob: Blob
+}
+
+export interface CaseZipPreview {
+  caseId: string
+  zipFileName: string
+  docxFileName: string
+  attachmentPaths: string[]
 }
 
 function sanitizeFileName(name: string): string {
@@ -69,17 +76,35 @@ export function buildCasePackBaseName(agencyName: string, workOrderNo: string): 
   return sanitizeFileName(`${agencyName}${workOrderDate}调证`.trim())
 }
 
-export function validateCasePackItems(items: CasePackItem[]): CasePackValidationResult[] {
+function getDocxFieldValue(item: CasePackItem, key: CasePackDocxFieldKey): string {
+  return item[key]
+}
+
+function getDocxFieldLabel(config: CasePackDocxFieldConfig[], key: CasePackDocxFieldKey): string {
+  return config.find(field => field.key === key)?.label || key
+}
+
+export function validateCasePackItems(
+  items: CasePackItem[],
+  docxFields: CasePackDocxFieldConfig[]
+): CasePackValidationResult[] {
   return items.map((item, index) => {
     const errors: string[] = []
     const workOrderDate = extractWorkOrderDate(item.workOrderNo)
     const baseName = buildCasePackBaseName(item.agencyName, item.workOrderNo)
 
-    if (!item.workOrderNo.trim()) errors.push('缺少 执法请求-工单号')
-    if (!item.agencyEmail.trim()) errors.push('缺少 司法机构-邮箱')
-    if (!item.agencyName.trim()) errors.push('缺少 司法机构-名称')
-    if (!item.agencyPhone.trim()) errors.push('缺少 司法机构-电话')
-    if (!item.documentNumber.trim()) errors.push('缺少 司法/执法文书-编号')
+    if (!item.workOrderNo.trim()) errors.push(`缺少 ${getDocxFieldLabel(docxFields, 'workOrderNo')}`)
+    if (!item.agencyName.trim()) errors.push(`缺少 ${getDocxFieldLabel(docxFields, 'agencyName')}`)
+    docxFields.forEach(field => {
+      if (
+        field.key !== 'workOrderNo' &&
+        field.key !== 'agencyName' &&
+        item.includedDocxFields[field.key] &&
+        !getDocxFieldValue(item, field.key).trim()
+      ) {
+        errors.push(`缺少 ${field.label}`)
+      }
+    })
     if (workOrderDate.length !== 8) errors.push('工单号無法提取 8 位工单日期')
     if (!baseName) errors.push('司法机构-名稱與工单日期不可為空')
 
@@ -91,7 +116,7 @@ export function validateCasePackItems(items: CasePackItem[]): CasePackValidation
   })
 }
 
-async function createCaseDocBlob(item: CasePackItem): Promise<Blob> {
+async function createCaseDocBlob(item: CasePackItem, docxFields: CasePackDocxFieldConfig[]): Promise<Blob> {
   const { Document, Packer, Paragraph, TextRun } = await loadCasePackDeps()
 
   const createLine = (text: string) =>
@@ -108,11 +133,9 @@ async function createCaseDocBlob(item: CasePackItem): Promise<Blob> {
     sections: [
       {
         children: [
-          createLine(`执法请求-工单号（司法案件编号）：${item.workOrderNo}`),
-          createLine(`司法机构-邮箱：${item.agencyEmail}`),
-          createLine(`司法机构-名称：${item.agencyName}`),
-          createLine(`司法机构-电话：${item.agencyPhone}`),
-          createLine(`司法/执法文书-编号：${item.documentNumber}`),
+          ...docxFields
+            .filter(field => item.includedDocxFields[field.key])
+            .map(field => createLine(`${field.label}：${getDocxFieldValue(item, field.key)}`)),
           new Paragraph(''),
           new Paragraph('')
         ]
@@ -123,7 +146,29 @@ async function createCaseDocBlob(item: CasePackItem): Promise<Blob> {
   return Packer.toBlob(doc)
 }
 
-export async function buildCasePackZipFiles(items: CasePackItem[]): Promise<CaseZipOutput[]> {
+export function getCasePackZipPreviews(items: CasePackItem[]): CaseZipPreview[] {
+  const usedZipNames = new Set<string>()
+
+  return items.map(item => {
+    const folderName = sanitizeFileName(buildCasePackBaseName(item.agencyName, item.workOrderNo)) || '案件'
+    const usedFileNames = new Set<string>()
+    const attachmentPaths = item.uploadedFiles.map(file => `${folderName}/${ensureUniqueName(file.name, usedFileNames)}`)
+    const zipFileName = ensureUniqueName(`${folderName}.zip`, usedZipNames)
+
+    return {
+      caseId: item.id,
+      zipFileName,
+      docxFileName: `${folderName}.docx`,
+      attachmentPaths
+    }
+  })
+}
+
+export async function buildCasePackZipFiles(
+  items: CasePackItem[],
+  docxFields: CasePackDocxFieldConfig[],
+  onProgress?: (completed: number, total: number) => void
+): Promise<CaseZipOutput[]> {
   const { JSZip } = await loadCasePackDeps()
   const outputs: CaseZipOutput[] = []
   const usedZipNames = new Set<string>()
@@ -137,8 +182,8 @@ export async function buildCasePackZipFiles(items: CasePackItem[]): Promise<Case
       throw new Error(`建立資料夾失敗: ${folderName}`)
     }
 
-    const docBlob = await createCaseDocBlob(item)
-    folder.file(`${folderName}.docx`, docBlob)
+    const docBlob = await createCaseDocBlob(item, docxFields)
+    zip.file(`${folderName}.docx`, docBlob)
 
     const usedFileNames = new Set<string>()
     for (const file of item.uploadedFiles) {
@@ -152,6 +197,7 @@ export async function buildCasePackZipFiles(items: CasePackItem[]): Promise<Case
       fileName: zipFileName,
       blob: await zip.generateAsync({ type: 'blob' })
     })
+    onProgress?.(outputs.length, items.length)
   }
 
   return outputs

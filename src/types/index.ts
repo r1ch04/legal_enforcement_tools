@@ -34,7 +34,26 @@ export interface CasePackItem {
   agencyName: string;
   agencyPhone: string;
   documentNumber: string;
+  officerName: string;
+  includedDocxFields: CasePackDocxFieldSelection;
   uploadedFiles: File[];
+}
+
+export interface CasePackDocxFieldSelection {
+  workOrderNo: boolean;
+  agencyEmail: boolean;
+  agencyName: boolean;
+  agencyPhone: boolean;
+  documentNumber: boolean;
+  officerName: boolean;
+}
+
+export type CasePackDocxFieldKey = keyof CasePackDocxFieldSelection;
+
+export interface CasePackDocxFieldConfig {
+  key: CasePackDocxFieldKey;
+  label: string;
+  defaultIncluded: boolean;
 }
 
 export type InfoType = 
