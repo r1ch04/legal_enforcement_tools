@@ -69,13 +69,7 @@ npm run preview
 
 ## 部署到 GitHub Pages
 
-### 發布
-
-```bash
-npm run deploy
-```
-
-`npm run deploy` 會先建立 `dist/`，再使用 `gh-pages` 將它發布至 `gh-pages` 分支。請在 GitHub Pages 設定中選擇從該分支部署；主分支無須提交 `dist/`。
+推送至 `main` 後，GitHub Actions 會自動建立並發布網站。請在 GitHub 的 **Settings → Pages** 將來源設為 **GitHub Actions**。網站輸出由工作流直接部署，因此無須提交 `dist/`，也不會建立 `gh-pages` 分支。
 
 **注意**: 如果您的倉庫名稱不是 `legal_enforcement_tools`，請在 `vite.config.ts` 中設置正確的 `base` 路徑。
 
