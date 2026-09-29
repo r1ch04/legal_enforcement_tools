@@ -69,17 +69,7 @@ npm run preview
 
 ## 部署到 GitHub Pages
 
-### 方法 1: 使用 GitHub Actions
-
-1. 確保您的倉庫已啟用 GitHub Pages
-   - 前往倉庫的 Settings > Pages
-   - 選擇 Source 為 "GitHub Actions"
-
-2. 推送代碼到 `main` 或 `master` 分支，並確保工作流會先執行 `npm ci` 與 `npm run build`
-
-3. GitHub Actions 會自動構建並部署到 GitHub Pages
-
-### 方法 2: 手動部署
+### 發布
 
 ```bash
 npm run deploy
